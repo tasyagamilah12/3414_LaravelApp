@@ -2,47 +2,56 @@
 
 @section('content')
 
-<h1 class="text-3xl font-bold mb-5">Data Kategori</h1>
+<h1 class="text-3xl font-bold mb-5">Data Partner</h1>
 
 <form method="GET" class="mb-4 flex gap-2">
-    <input 
+
+    <input
         type="text"
         name="search"
-        placeholder="Cari kategori..."
+        placeholder="Cari partner..."
         class="border p-2 rounded w-80"
     >
 
     <button class="bg-blue-500 text-white px-4 rounded">
         Cari
     </button>
+
 </form>
 
-<a href="/admin/categories/create"
+<a href="/admin/partners/create"
 class="bg-green-500 text-white px-4 py-2 rounded">
-Tambah Kategori
+Tambah Partner
 </a>
 
 <table class="w-full mt-5 border">
+
     <tr class="bg-gray-200">
         <th class="border p-2">ID</th>
         <th class="border p-2">Nama</th>
+        <th class="border p-2">Logo</th>
         <th class="border p-2">Action</th>
     </tr>
 
-    @foreach($categories as $category)
+    @foreach($partners as $partner)
 
     <tr>
-        <td class="border p-2">{{ $category->id }}</td>
-        <td class="border p-2">{{ $category->name }}</td>
+        <td class="border p-2">{{ $partner->id }}</td>
+
+        <td class="border p-2">{{ $partner->name }}</td>
+
+        <td class="border p-2">
+            <img src="{{ $partner->logo_url }}" width="100">
+        </td>
 
         <td class="border p-2 flex gap-2">
 
-            <a href="/admin/categories/{{ $category->id }}/edit"
+            <a href="/admin/partners/{{ $partner->id }}/edit"
             class="bg-yellow-500 text-white px-3 py-1 rounded">
                 Edit
             </a>
 
-            <form action="/admin/categories/{{ $category->id }}"
+            <form action="/admin/partners/{{ $partner->id }}"
             method="POST">
 
                 @csrf
@@ -55,6 +64,7 @@ Tambah Kategori
             </form>
 
         </td>
+
     </tr>
 
     @endforeach
