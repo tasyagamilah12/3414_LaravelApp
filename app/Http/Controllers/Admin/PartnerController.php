@@ -14,7 +14,7 @@ class PartnerController extends Controller
 
         $partners = Partner::when($search, function ($query, $search) {
             return $query->where('name', 'LIKE', "%{$search}%");
-        })->get();
+        })->latest()->get();
 
         return view('admin.partners.index', compact('partners'));
     }
@@ -26,12 +26,26 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|max:255',
+            'logo_url' => 'required'
+        ]);
+
         Partner::create([
             'name' => $request->name,
             'logo_url' => $request->logo_url
         ]);
 
-        return redirect('/admin/partners');
+        return redirect()
+            ->route('admin.partners.index')
+            ->with('success', 'Partner berhasil ditambahkan');
+    }
+
+    public function show($id)
+    {
+        $partner = Partner::findOrFail($id);
+
+        return view('admin.partners.show', compact('partner'));
     }
 
     public function edit($id)
@@ -43,6 +57,11 @@ class PartnerController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|max:255',
+            'logo_url' => 'required'
+        ]);
+
         $partner = Partner::findOrFail($id);
 
         $partner->update([
@@ -50,7 +69,9 @@ class PartnerController extends Controller
             'logo_url' => $request->logo_url
         ]);
 
-        return redirect('/admin/partners');
+        return redirect()
+            ->route('admin.partners.index')
+            ->with('success', 'Partner berhasil diperbarui');
     }
 
     public function destroy($id)
@@ -59,6 +80,8 @@ class PartnerController extends Controller
 
         $partner->delete();
 
-        return redirect('/admin/partners');
+        return redirect()
+            ->route('admin.partners.index')
+            ->with('success', 'Partner berhasil dihapus');
     }
 }

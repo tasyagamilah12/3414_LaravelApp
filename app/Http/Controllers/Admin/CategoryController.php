@@ -15,7 +15,7 @@ class CategoryController extends Controller
 
         $categories = Category::when($search, function ($query, $search) {
             return $query->where('name', 'LIKE', "%{$search}%");
-        })->get();
+        })->latest()->get();
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -27,12 +27,25 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|max:255'
+        ]);
+
         Category::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name)
         ]);
 
-        return redirect('/admin/categories');
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Kategori berhasil ditambahkan');
+    }
+
+    public function show($id)
+    {
+        $category = Category::findOrFail($id);
+
+        return view('admin.categories.show', compact('category'));
     }
 
     public function edit($id)
@@ -44,6 +57,10 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|max:255'
+        ]);
+
         $category = Category::findOrFail($id);
 
         $category->update([
@@ -51,7 +68,9 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name)
         ]);
 
-        return redirect('/admin/categories');
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Kategori berhasil diperbarui');
     }
 
     public function destroy($id)
@@ -60,6 +79,8 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect('/admin/categories');
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Kategori berhasil dihapus');
     }
 }

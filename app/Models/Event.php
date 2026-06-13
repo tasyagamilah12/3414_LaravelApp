@@ -14,7 +14,8 @@ class Event extends Model
         'location',
         'price',
         'stock',
-    ];
+        'poster_path'
+        ];
 
     public function category()
     {

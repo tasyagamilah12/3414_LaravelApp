@@ -1,58 +1,84 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+// USER CONTROLLER
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EventController;
+
+// ADMIN CONTROLLER
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 
-// User
+
+// ======================
+// PUBLIC ROUTE
+// ======================
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/event/1', [EventController::class, 'show'])->name('events.show');
+/*
+|--------------------------------------------------------------------------
+| Login Alias Laravel
+|--------------------------------------------------------------------------
+| Middleware auth bawaan Laravel mencari route bernama "login"
+| Kita arahkan ke admin login.
+|
+*/
 
-Route::get('/checkout', [EventController::class, 'checkout'])->name('checkout');
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
 
-Route::get('/my-ticket', [EventController::class, 'ticket'])->name('ticket');
+
+Route::get('/events/{event}',
+[\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
+
+Route::get('/checkout', [EventController::class, 'checkout'])
+    ->name('checkout');
+
+Route::get('/my-ticket', [EventController::class, 'ticket'])
+    ->name('ticket');
 
 
-// Admin
-Route::prefix('admin')->group(function () {
+// ======================
+// AUTH ADMIN
+// ======================
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+Route::prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-    Route::get('/events', [AdminEventController::class, 'index'])
-        ->name('admin.events');
+        Route::get('/login', [AuthController::class, 'showLogin'])
+            ->name('login');
 
-    Route::get('/events/create', [AdminEventController::class, 'create'])
-        ->name('admin.events.create');
+        Route::post('/login', [AuthController::class, 'login'])
+            ->name('login.post');
 
-    Route::post('/events', [AdminEventController::class, 'store'])
-        ->name('admin.events.store');
+        Route::post('/logout', [AuthController::class, 'logout'])
+            ->name('logout');
+    });
 
-    Route::get('/events/{id}/edit', [AdminEventController::class, 'edit'])
-        ->name('admin.events.edit');
 
-    Route::put('/events/{id}', [AdminEventController::class, 'update'])
-        ->name('admin.events.update');
+// ======================
+// ADMIN AREA
+// ======================
 
-    Route::delete('/events/{id}', [AdminEventController::class, 'destroy'])
-        ->name('admin.events.destroy');
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'admin'])
+    ->group(function () {
 
-    Route::get('/transactions', function () {
-        return view('admin.transactions');
-    })->name('admin.transactions');
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
+        Route::resource('categories', CategoryController::class);
+
+        Route::resource('partners', PartnerController::class);
+
+        Route::resource('events', AdminEventController::class);
+    });
     
-    // CATEGORY CRUD
-    Route::resource('categories', CategoryController::class);
-
-    
-    // PARTNER CRUD
-    Route::resource('partners', PartnerController::class);
-
-});
