@@ -1,201 +1,208 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- HERO SECTION -->
-    <section class="max-w-7xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-12">
 
-        <div class="flex-1 space-y-8">
+<!-- HERO SECTION -->
+<section class="max-w-7xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-12">
 
-            <span
-                class="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold uppercase tracking-wider">
-                #1 Event Platform
+    <div class="flex-1 space-y-8">
+
+        <span class="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold uppercase tracking-wider">
+            #1 Event Platform
+        </span>
+
+        <h1 class="text-5xl md:text-7xl font-extrabold leading-tight">
+            Temukan & Pesan
+            <span class="text-indigo-600">
+                Tiket Event
             </span>
+            Impianmu.
+        </h1>
 
-            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight">
-                Temukan & Pesan
-                <span class="text-indigo-600">
-                    Tiket Event
-                </span>
-                Impianmu.
-            </h1>
+        <p class="text-lg text-slate-500 max-w-lg leading-relaxed">
+            Dari konser musik hingga workshop teknologi,
+            semua ada di genggamanmu.
+            Pesan aman & cepat dengan Midtrans.
+        </p>
 
-            <p class="text-lg text-slate-500 max-w-lg leading-relaxed">
-                Dari konser musik hingga workshop teknologi,
-                semua ada di genggamanmu.
-                Pesan aman & cepat dengan Midtrans.
+        <div class="flex gap-4">
+
+            <a href="#events"
+                class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:scale-105 transition-transform">
+                Mulai Jelajah
+            </a>
+
+            <a href="#"
+                class="px-8 py-4 border-2 border-slate-200 rounded-2xl font-bold text-lg hover:border-indigo-600 hover:text-indigo-600 transition">
+                Cara Pesan
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="flex-1">
+
+        <img src="{{ asset('assets/concert.png') }}"
+            class="rounded-3xl shadow-2xl w-full">
+
+    </div>
+
+</section>
+
+
+
+<!-- EVENT SECTION -->
+<section id="events" class="max-w-7xl mx-auto px-6 py-20">
+
+    <div class="flex justify-between items-end mb-12">
+
+        <div>
+
+            <h2 class="text-3xl font-extrabold mb-2">
+                Event Terdekat
+            </h2>
+
+            <p class="text-slate-500 font-medium">
+                Jangan sampai ketinggalan acara seru minggu ini!
             </p>
 
-            <div class="flex gap-4">
-
-                <a href="#events"
-                    class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:scale-105 transition-transform">
-
-                    Mulai Jelajah
-
-                </a>
-
-                <a href="#"
-                    class="px-8 py-4 border-2 border-slate-200 rounded-2xl font-bold text-lg hover:border-indigo-600 hover:text-indigo-600 transition">
-
-                    Cara Pesan
-
-                </a>
-
-            </div>
-
         </div>
 
-        <div class="flex-1 relative">
+    </div>
 
-            <img src="{{ asset('assets/concert.png') }}" class="rounded-3xl shadow-2xl">
 
-        </div>
+    <!-- FILTER -->
+    <div class="mb-8 flex gap-4 flex-wrap">
 
-    </section>
+        <a href="/"
+            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition">
+            Semua Kategori
+        </a>
 
-    <!-- EVENT SECTION -->
-    <section id="events" class="max-w-7xl mx-auto px-6 py-20">
+        @foreach ($categories as $cat)
 
-        <div class="flex justify-between items-end mb-12">
+            <a href="#"
+                class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition">
 
-            <div>
-
-                <h2 class="text-3xl font-extrabold mb-2">
-                    Event Terdekat
-                </h2>
-
-                <p class="text-slate-500 font-medium">
-                    Jangan sampai ketinggalan acara seru minggu ini!
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- FILTER KATEGORI -->
-        <div class="mb-8 flex gap-4 flex-wrap">
-
-            <a href="/" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-black transition">
-
-                Semua Kategori
+                {{ $cat->name }}
 
             </a>
 
-            @foreach ($categories as $cat)
-                <a href="/?category={{ $cat->slug }}"
-                    class="px-4 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded shadow-sm transition">
+        @endforeach
 
-                    {{ $cat->name }}
+    </div>
 
-                </a>
-            @endforeach
 
-        </div>
 
-        <!-- GRID EVENT -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- LIST EVENT -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            @foreach ($events as $event)
-                <div
-                    class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden">
+        @foreach ($events as $event)
 
-                    <div class="relative overflow-hidden aspect-[3/4]">
+            <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition">
 
-                        @php
+                <div class="aspect-[3/4] overflow-hidden">
 
-                            $imageMap = [
-                                'entertainment' => 'concert.png',
-                                'seminar-it' => 'hackathon.png',
-                                'workshop' => 'workshop.png',
-                            ];
+                    <img
+                        src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path))
+                            ? asset('storage/'.$event->poster_path)
+                            : 'https://placehold.co/400x600' }}"
 
-                            $slug = $event->category->slug ?? '';
+                        alt="{{ $event->title }}"
 
-                            $image = $imageMap[$slug] ?? 'concert.png';
-
-                        @endphp
-
-                        <img src="{{ $event->poster_path && Storage::disk('public')->exists($event->poster_path)
-                            ? asset('storage/' . $event->poster_path)
-                            : 'https://placehold.co/200x600' }}"
-                            alt="{{ $event->title }}"
-                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-
-                        <div
-                            class="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur rounded-lg text-xs font-bold uppercase text-indigo-600">
-
-                            {{ $event->category->name }}
-
-                        </div>
-
-                    </div>
-
-                    <div class="p-6">
-
-                        <h3 class="text-xl font-bold mb-2 group-hover:text-indigo-600 transition">
-
-                            {{ $event->title }}
-
-                        </h3>
-
-                        <div class="flex items-center gap-2 text-slate-500 text-sm mb-4">
-
-                            <span>
-                                {{ \Carbon\Carbon::parse($event->date)->format('d-m-Y H:i') }}
-                            </span>
-
-                        </div>
-
-                        <div class="flex justify-between items-center pt-4 border-t">
-
-                            <span class="text-2xl font-black text-indigo-600">
-
-                                Rp {{ number_format($event->price, 0, ',', '.') }}
-
-                            </span>
-
-                            <<a href="{{ route('events.show', $event->id) }}"
-                                class="px-5 py-2 bgindigo-50 text-indigo-600 rounded-xl font-bold hover:bg-indigo-600
-                            hover:text-white transition">
-                                Lihat Detail</a>
-
-                        </div>
-
-                    </div>
+                        class="w-full h-full object-cover hover:scale-110 transition duration-500">
 
                 </div>
-            @endforeach
 
-        </div>
 
-    </section>
+                <div class="p-6">
 
-    <!-- PARTNER SECTION -->
-    <section class="max-w-7xl mx-auto px-6 py-20">
+                    <span class="inline-block mb-3 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold">
 
-        <h2 class="text-3xl font-bold mb-8">
+                        {{ $event->category->name }}
 
-            Partner Kami
+                    </span>
 
-        </h2>
+                    <h3 class="text-xl font-bold mb-2">
 
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
-
-            @foreach ($partners as $partner)
-                <div class="bg-white p-4 rounded-2xl shadow text-center">
-
-                    <img src="{{ $partner->logo_url }}" class="w-full h-24 object-cover rounded mb-3">
-
-                    <h3 class="font-bold">
-
-                        {{ $partner->name }}
+                        {{ $event->title }}
 
                     </h3>
 
+                    <p class="text-gray-500 text-sm mb-2">
+
+                        {{ \Carbon\Carbon::parse($event->date)->format('d M Y, H:i') }}
+
+                    </p>
+
+                    <p class="text-gray-500 mb-4">
+
+                        {{ $event->location }}
+
+                    </p>
+
+                    <div class="flex justify-between items-center">
+
+                        <span class="text-2xl font-bold text-indigo-600">
+
+                            Rp {{ number_format($event->price,0,',','.') }}
+
+                        </span>
+
+                        <a href="{{ route('events.show',$event->id) }}"
+                            class="px-5 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold hover:bg-indigo-600 hover:text-white transition">
+
+                            Lihat Detail
+
+                        </a>
+
+                    </div>
+
                 </div>
-            @endforeach
 
-        </div>
+            </div>
 
-    </section>
+        @endforeach
+
+    </div>
+
+</section>
+
+
+
+<!-- PARTNER -->
+<section class="max-w-7xl mx-auto px-6 py-20">
+
+    <h2 class="text-3xl font-bold mb-8">
+
+        Partner Kami
+
+    </h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+
+        @foreach ($partners as $partner)
+
+            <div class="bg-white rounded-2xl shadow p-4 text-center">
+
+                <img
+                    src="{{ $partner->logo_url }}"
+                    alt="{{ $partner->name }}"
+                    class="w-full h-24 object-cover rounded mb-3">
+
+                <h3 class="font-bold">
+
+                    {{ $partner->name }}
+
+                </h3>
+
+            </div>
+
+        @endforeach
+
+    </div>
+
+</section>
+
 @endsection

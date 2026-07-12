@@ -12,18 +12,44 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('event_id')->constrained()->cascadeOnDelete();
-        $table->string('order_id')->unique(); // No Pesanan unik$table->string('customer_name');
-        $table->string('customer_email');
-        $table->string('customer_phone');
-        $table->integer('total_price');
-        $table->string('status')->default('Pending');
-        $table->string('snap_token')->nullable();
-        $table->timestamps();
-        
+
+            $table->id();
+
+            $table->foreignId('event_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            // Nomor Order Midtrans
+            $table->string('order_id')->unique();
+
+            // Data Customer
+            $table->string('customer_name');
+            $table->string('customer_email');
+            $table->string('customer_phone');
+
+            // Total pembayaran
+            $table->integer('total_price');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Status Transaksi
+            |--------------------------------------------------------------------------
+            | pending
+            | settlement
+            | success
+            | failed
+            | challenge
+            |--------------------------------------------------------------------------
+            */
+            $table->string('status')
+                ->default('pending');
+
+            // Snap Token Midtrans
+            $table->string('snap_token')->nullable();
+
+            $table->timestamps();
         });
-}
+    }
 
     /**
      * Reverse the migrations.
