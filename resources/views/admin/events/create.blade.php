@@ -77,6 +77,7 @@
                 <input type="file" name="poster" accept="image/*" class="w-full
 border border-gray-300 p-2.5 rounded">
             </div>
+
             <div class="flex justify-end border-t pt-4">
                 <button type="submit"
                     class="bg-indigo-600 textwhite px-8 py-2.5 rounded font-semibold hover:bg-indigo-700

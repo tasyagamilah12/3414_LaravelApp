@@ -1,12 +1,13 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 
 // PUBLIC CONTROLLER
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\MidtransWebhookController;
 
 // ADMIN CONTROLLER
 use App\Http\Controllers\Admin\AuthController;
@@ -14,11 +15,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\PartnerController;
-use App\Http\Controllers\TransactionController;
-
-use App\Http\Controllers\MidtransWebhookController;
-
-
+use App\Http\Controllers\Admin\ExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +70,13 @@ Route::prefix('admin')
             ->name('logout');
     });
 
-Route::post('/midtrans/callback', [\App\Http\Controllers\MidtransWebhookController::class, 'handle']);
+/*
+|--------------------------------------------------------------------------
+| MIDTRANS CALLBACK
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/midtrans/callback', [MidtransWebhookController::class, 'handle']);
 
 /*
 |--------------------------------------------------------------------------
@@ -86,15 +89,27 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(function () {
 
+        // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        // Master Data
         Route::resource('categories', CategoryController::class);
-
         Route::resource('partners', PartnerController::class);
-
         Route::resource('events', AdminEventController::class);
 
+        // Transactions
         Route::get('/transactions', [TransactionController::class, 'index'])
             ->name('transactions.index');
+
+        Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])
+            ->name('transactions.show');
+
+        // Export PDF
+        Route::get('/transactions/export/pdf', [ExportController::class, 'pdf'])
+            ->name('transactions.export.pdf');
+
+        // Export Excel
+        Route::get('/transactions/export/excel', [ExportController::class, 'excel'])
+            ->name('transactions.export.excel');
     });

@@ -4,133 +4,170 @@
 
 <div class="p-6">
 
+    {{-- Header --}}
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">
             Manajemen Event
         </h2>
 
-        <a
-            href="{{ route('admin.events.create') }}"
-            class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+        <a href="{{ route('admin.events.create') }}"
+            class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
 
             Tambah Event
         </a>
     </div>
 
-
+    {{-- Alert Success --}}
     @if(session('success'))
-        <div class="bg-green-100 text-green-700 p-4 rounded mb-5">
+        <div class="bg-green-100 border border-green-300 text-green-700 p-4 rounded mb-5">
             {{ session('success') }}
         </div>
     @endif
 
-
     <div class="overflow-x-auto">
 
-        <table class="w-full bg-white rounded shadow border">
+        <table class="w-full bg-white rounded-lg shadow border">
 
-            <thead>
-                <tr class="bg-gray-50">
+            {{-- Header Table --}}
+            <thead class="bg-gray-50">
+                <tr>
 
-                    <th class="p-4">Poster</th>
+                    <th class="p-4 text-center">Poster</th>
 
-                    <th class="p-4">
+                    <th class="p-4 text-left">
                         Judul Event
                     </th>
 
-                    <th class="p-4">
+                    <th class="p-4 text-center">
                         Kategori
                     </th>
 
-                    <th class="p-4">
+                    <th class="p-4 text-center">
                         Tanggal
                     </th>
 
-                    <th class="p-4">
+                    <th class="p-4 text-center">
+                        Stok
+                    </th>
+
+                    <th class="p-4 text-center">
                         Aksi
                     </th>
 
                 </tr>
             </thead>
 
-
             <tbody>
 
-                @foreach($events as $event)
+            @forelse($events as $event)
 
-                <tr class="border-b">
+                <tr class="border-b hover:bg-gray-50">
 
-                    {{-- POSTER --}}
-                    <td class="p-4">
+                    {{-- Poster --}}
+                    <td class="p-4 text-center">
 
                         <img
                             src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path))
                                 ? asset('storage/'.$event->poster_path)
                                 : 'https://placehold.co/80x100' }}"
-
-                            class="w-16 h-20 rounded-xl object-cover">
+                            class="w-16 h-20 rounded-lg object-cover mx-auto">
 
                     </td>
 
-
-                    {{-- JUDUL --}}
-                    <td class="p-4">
+                    {{-- Judul --}}
+                    <td class="p-4 font-medium">
 
                         {{ $event->title }}
 
                     </td>
 
-
-                    {{-- KATEGORI --}}
-                    <td class="p-4">
+                    {{-- Kategori --}}
+                    <td class="p-4 text-center">
 
                         {{ $event->category->name ?? '-' }}
 
                     </td>
 
-
-                    {{-- TANGGAL --}}
-                    <td class="p-4">
+                    {{-- Tanggal --}}
+                    <td class="p-4 text-center">
 
                         {{ \Carbon\Carbon::parse($event->date)->format('d M Y, H:i') }}
 
                     </td>
 
+                    {{-- STOK --}}
+                    <td class="p-4 text-center">
 
-                    {{-- AKSI --}}
-                    <td class="p-4 flex gap-2">
+                        @if($event->stock > 20)
 
-                        <a
-                            href="{{ route('admin.events.edit',$event->id) }}"
-                            class="bg-blue-100 text-blue-600 px-3 py-1 rounded">
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+                                {{ $event->stock }} Tiket
+                            </span>
 
-                            Edit
+                        @elseif($event->stock > 0)
 
-                        </a>
+                            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">
+                                {{ $event->stock }} Tiket
+                            </span>
 
+                        @else
 
-                        <form
-                            action="{{ route('admin.events.destroy',$event->id) }}"
-                            method="POST">
+                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">
+                                Habis
+                            </span>
 
-                            @csrf
-                            @method('DELETE')
+                        @endif
 
-                            <button
-                                onclick="return confirm('Yakin hapus?')"
-                                class="bg-red-100 text-red-600 px-3 py-1 rounded">
+                    </td>
 
-                                Hapus
+                    {{-- Aksi --}}
+                    <td class="p-4">
 
-                            </button>
+                        <div class="flex justify-center gap-2">
 
-                        </form>
+                            <a href="{{ route('admin.events.edit',$event->id) }}"
+                                class="bg-blue-100 text-blue-600 px-3 py-1 rounded hover:bg-blue-200">
+
+                                Edit
+
+                            </a>
+
+                            <form action="{{ route('admin.events.destroy',$event->id) }}"
+                                method="POST">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button
+                                    type="submit"
+                                    onclick="return confirm('Yakin ingin menghapus event ini?')"
+                                    class="bg-red-100 text-red-600 px-3 py-1 rounded hover:bg-red-200">
+
+                                    Hapus
+
+                                </button>
+
+                            </form>
+
+                        </div>
 
                     </td>
 
                 </tr>
 
-                @endforeach
+            @empty
+
+                <tr>
+
+                    <td colspan="6" class="text-center p-8 text-gray-500">
+
+                        Belum ada data event.
+
+                    </td>
+
+                </tr>
+
+            @endforelse
 
             </tbody>
 

@@ -13,6 +13,7 @@ class Transaction extends Model
         'customer_email',
         'customer_phone',
         'total_price',
+        'payment_type',
         'status',
         'snap_token',
     ];

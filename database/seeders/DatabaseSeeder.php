@@ -104,7 +104,8 @@ class DatabaseSeeder extends Seeder
         ]);
         
         $this->call([
-    PartnerSeeder::class
-    ]);
-    }
+            PartnerSeeder::class,
+            OrganizerSeeder::class,
+        ]);
+        }
 }

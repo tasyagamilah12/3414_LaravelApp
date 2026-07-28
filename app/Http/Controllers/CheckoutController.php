@@ -30,6 +30,11 @@ class CheckoutController extends Controller
             'customer_phone' => 'required|string|max:20',
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Cek stok sebelum checkout
+        |--------------------------------------------------------------------------
+        */
         if ($event->stock <= 0) {
             return back()->with(
                 'error',
@@ -37,13 +42,25 @@ class CheckoutController extends Controller
             );
         }
 
-        // Generate Order ID unik
+        /*
+        |--------------------------------------------------------------------------
+        | Generate Order ID
+        |--------------------------------------------------------------------------
+        */
         $orderId = 'TRX-' . time() . '-' . strtoupper(Str::random(5));
 
-        // Harga tiket + biaya admin
+        /*
+        |--------------------------------------------------------------------------
+        | Hitung total pembayaran
+        |--------------------------------------------------------------------------
+        */
         $totalPrice = $event->price + 5000;
 
-        // Simpan transaksi ke database
+        /*
+        |--------------------------------------------------------------------------
+        | Simpan transaksi
+        |--------------------------------------------------------------------------
+        */
         $transaction = Transaction::create([
             'event_id'        => $event->id,
             'order_id'        => $orderId,
@@ -54,23 +71,33 @@ class CheckoutController extends Controller
             'status'          => 'pending',
         ]);
 
-        // Konfigurasi Midtrans
+        /*
+        |--------------------------------------------------------------------------
+        | Konfigurasi Midtrans
+        |--------------------------------------------------------------------------
+        */
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
         Config::$isSanitized = true;
         Config::$is3ds = true;
 
         $params = [
+
             'transaction_details' => [
+
                 'order_id' => $orderId,
                 'gross_amount' => $totalPrice,
+
             ],
 
             'customer_details' => [
+
                 'first_name' => $request->customer_name,
                 'email'      => $request->customer_email,
                 'phone'      => $request->customer_phone,
+
             ],
+
         ];
 
         try {
@@ -78,7 +105,7 @@ class CheckoutController extends Controller
             $snapToken = Snap::getSnapToken($params);
 
             $transaction->update([
-                'snap_token' => $snapToken,
+                'snap_token' => $snapToken
             ]);
 
             return redirect()->route(
@@ -92,8 +119,15 @@ class CheckoutController extends Controller
                 'error',
                 'Midtrans Error : ' . $e->getMessage()
             );
+
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Halaman pembayaran
+    |--------------------------------------------------------------------------
+    */
 
     public function payment($order_id)
     {
@@ -112,10 +146,16 @@ class CheckoutController extends Controller
         );
     }
 
-    /**
-     * Halaman sukses hanya sebagai tampilan.
-     * Status transaksi akan diubah oleh Webhook Midtrans.
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Halaman sukses
+    |--------------------------------------------------------------------------
+    | Halaman ini hanya menampilkan informasi pembayaran.
+    | Status transaksi, pengurangan stok dan pengiriman email
+    | ditangani oleh MidtransWebhookController.
+    |--------------------------------------------------------------------------
+    */
+
     public function success($order_id)
     {
         $categories = Category::all();
