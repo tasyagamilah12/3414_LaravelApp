@@ -1,36 +1,39 @@
 <?php
 
-// Forward request ke Vercel Serverless Function
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
+// Load Composer Autoloader
 require __DIR__ . '/../vendor/autoload.php';
 
-// Siapkan direktori /tmp untuk storage Laravel di Vercel
+// Bootstrap Laravel Application
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
-// Override path storage & cache ke /tmp agar tidak read-only error
+// Arahkan storage folder ke /tmp (karena /tmp bisa ditulis di Vercel)
 $app->useStoragePath('/tmp/storage');
 
-if (!is_dir('/tmp/storage/framework/views')) {
-    mkdir('/tmp/storage/framework/views', 0755, true);
+// Buat struktur folder sementara di /tmp jika belum ada
+$dirs = [
+    '/tmp/storage/framework/views',
+    '/tmp/storage/framework/sessions',
+    '/tmp/storage/framework/cache',
+    '/tmp/storage/framework/testing',
+    '/tmp/storage/logs',
+];
+
+foreach ($dirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
 }
 
-if (!is_dir('/tmp/storage/framework/sessions')) {
-    mkdir('/tmp/storage/framework/sessions', 0755, true);
-}
-
-if (!is_dir('/tmp/storage/framework/cache')) {
-    mkdir('/tmp/storage/framework/cache', 0755, true);
-}
-
-if (!is_dir('/tmp/storage/logs')) {
-    mkdir('/tmp/storage/logs', 0755, true);
-}
-
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+// Jalankan Kernel Laravel
+$kernel = $app->make(Kernel::class);
 
 $response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
-
-$response->send();
+    $request = Request::capture()
+)->send();
 
 $kernel->terminate($request, $response);
