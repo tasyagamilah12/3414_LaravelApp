@@ -1,46 +1,31 @@
 FROM php:8.4-cli
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
     libpng-dev \
-    libjpeg62-turbo-dev \
+    libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
-    libonig-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Configure & install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+    libonig-dev
 
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
-    mbstring \
+    gd \
     zip \
-    bcmath \
-    gd
+    mbstring
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
 COPY . .
 
-# Install Composer dependencies
-RUN composer install \
-    --no-dev \
-    --prefer-dist \
-    --optimize-autoloader \
-    --no-interaction
-
-# Prepare Laravel directories
-RUN mkdir -p storage/framework/{cache,sessions,views} \
-    && chmod -R 775 storage bootstrap/cache
+RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 8080
 
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# HAPUS php artisan serve, GANTI DENGAN INI:
+CMD sh -c "php -S 0.0.0.0:${PORT:-8080} -t public/"
