@@ -2,4 +2,4 @@
 builder = "DOCKERFILE"
 
 [deploy]
-startCommand = "sh -c 'php -S 0.0.0.0:${PORT:-8080} -t public/'"
+startCommand = "sh -c 'php artisan config:clear && php artisan cache:clear && php -S 0.0.0.0:${PORT:-8080} -t public/'"
