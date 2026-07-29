@@ -22,4 +22,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(Event::class);
     }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
 }

@@ -68,6 +68,11 @@
             <a href="{{ route('admin.transactions.index') }}" class="px-4 py-3 rounded-lg hover:bg-indigo-800 transition">
                 Laporan Transaksi
             </a>
+
+            {{-- MENU CHECK-IN SCANNER --}}
+            <a href="{{ route('admin.checkin.index') }}" class="px-4 py-3 rounded-lg hover:bg-indigo-800 transition flex items-center gap-2">
+                <span> Check-in Scanner</span>
+            </a>
         </nav>
 
         <div class="mt-auto pt-8">

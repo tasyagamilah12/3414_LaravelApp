@@ -2,26 +2,37 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Field yang dapat diisi secara massal (Mass Assignment).
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'organization_name',
+        'avatar',
+        'google_id',
+    ];
+
+    /**
+     * Field yang disembunyikan saat serialisasi JSON.
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Casting tipe data atribut.
      */
     protected function casts(): array
     {
@@ -31,9 +42,39 @@ class User extends Authenticatable
         ];
     }
 
-    public function events(): HasMany
+    // ==========================================
+    // HELPER ROLE CHECKS (STEP 31)
+    // ==========================================
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isOrganizer(): bool
+    {
+        return $this->role === 'organizer';
+    }
+
+    // ==========================================
+    // RELASI MODEL (STEP 31)
+    // ==========================================
+
+    /**
+     * Relasi ke Event yang dibuat oleh Organizer/HIMA.
+     */
+    public function events()
     {
         return $this->hasMany(Event::class);
     }
 
+    public function organizerReviews()
+    {
+        return $this->hasMany(Review::class, 'organizer_id');
+    }
+
+    public function averageRating()
+    {
+        return round($this->organizerReviews()->avg('rating') ?? 0, 1);
+    }
 }

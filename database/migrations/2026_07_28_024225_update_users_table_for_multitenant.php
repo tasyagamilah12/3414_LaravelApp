@@ -9,25 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Jika kolom role belum ada, buat sebagai ENUM multi-tenant
+            // Role: admin (superadmin), organizer (HIMA/Kepanitiaan), buyer (pembeli)
             if (!Schema::hasColumn('users', 'role')) {
                 $table->enum('role', ['admin', 'organizer', 'buyer'])->default('buyer')->after('email');
-            } else {
-                // Jika kolom role sudah ada (misal tipe string), ubah tipe/default-nya
-                $table->string('role')->default('buyer')->change();
             }
-
-            // Tambahkan kolom penunjang multi-tenant & SSO Google
             if (!Schema::hasColumn('users', 'organization_name')) {
                 $table->string('organization_name')->nullable()->after('role');
             }
-
             if (!Schema::hasColumn('users', 'avatar')) {
                 $table->string('avatar')->nullable()->after('organization_name');
             }
-
             if (!Schema::hasColumn('users', 'google_id')) {
-                $table->string('google_id')->nullable()->after('avatar');
+                $table->string('google_id')->nullable()->after('avatar'); // Persiapan SSO Google (STEP 32)
             }
         });
     }
@@ -35,15 +28,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $columnsToDrop = [];
-
-            if (Schema::hasColumn('users', 'organization_name')) $columnsToDrop[] = 'organization_name';
-            if (Schema::hasColumn('users', 'avatar')) $columnsToDrop[] = 'avatar';
-            if (Schema::hasColumn('users', 'google_id')) $columnsToDrop[] = 'google_id';
-
-            if (!empty($columnsToDrop)) {
-                $table->dropColumn($columnsToDrop);
-            }
+            $table->dropColumn(['role', 'organization_name', 'avatar', 'google_id']);
         });
     }
 };
