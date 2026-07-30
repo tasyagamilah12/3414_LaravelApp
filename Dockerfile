@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
+    libicu-dev \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -15,7 +16,8 @@ RUN docker-php-ext-install \
     pdo_mysql \
     gd \
     zip \
-    mbstring
+    mbstring \
+    intl
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -27,5 +29,4 @@ RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 8080
 
-# HAPUS php artisan serve, GANTI DENGAN INI:
 CMD sh -c "php -S 0.0.0.0:${PORT:-8080} -t public/"
