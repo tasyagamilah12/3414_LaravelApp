@@ -36,11 +36,24 @@
             <a href="#" class="hover:text-indigo-600 transition">Kategori</a>
             <a href="#" class="hover:text-indigo-600 transition">Tentang Kami</a>
         </div>
-        <!-- <div class="flex gap-3">
-            <button class="px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-200 transition">Login</button>
-            <button
-                class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition">Daftar</button>
-        </div> -->
+        @auth
+            <div class="flex items-center gap-3">
+                @if (Auth::user()->avatar)
+                    <img src="{{ Auth::user()->avatar }}" alt="avatar"
+                        class="w-9 h-9 rounded-full border border-slate-200">
+                @endif
+                <span class="font-semibold text-sm">{{ Auth::user()->name }}</span>
+                <form method="POST" action="{{ route('admin.logout') }}">
+                    @csrf
+                    <button class="px-4 py-2 rounded-xl font-semibold text-sm hover:bg-slate-200 transition">Logout</button>
+                </form>
+            </div>
+        @else
+            <div class="flex gap-3">
+                <a href="{{ route('login') }}"
+                    class="px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-200 transition">Login</a>
+            </div>
+        @endauth
     </nav>
 
     @yield('content')
