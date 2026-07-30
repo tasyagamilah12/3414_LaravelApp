@@ -1,5 +1,7 @@
 FROM php:8.4-cli
 
+ENV BUILD_VERSION=2
+
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
