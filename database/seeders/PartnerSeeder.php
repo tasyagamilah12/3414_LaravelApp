@@ -9,16 +9,13 @@ class PartnerSeeder extends Seeder
 {
     public function run(): void
     {
-        $partners = [
-            ['name' => 'Direktorat Kemahasiswaan Amikom'],
-            ['name' => 'Himpunan Mahasiswa Sistem Informasi'],
-            ['name' => 'Kadin Yogyakarta'],
-        ];
+        for ($i = 1; $i <= 5; $i++) {
 
-        foreach ($partners as $partner) {
-            Partner::firstOrCreate(
-                ['name' => $partner['name']]
-            );
+            Partner::create([
+                'name' => fake()->company(),
+                'logo_url' => 'https://placehold.co/200x200'
+            ]);
+
         }
     }
 }
