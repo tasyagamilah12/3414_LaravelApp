@@ -36,7 +36,7 @@
             <a href="#" class="hover:text-indigo-600 transition">Kategori</a>
             <a href="#" class="hover:text-indigo-600 transition">Tentang Kami</a>
             @auth
-                <a href="{{ route('transactions.index') }}" class="hover:text-indigo-600 transition">Rating / Ulasan</a>
+                <a href="{{ route('admin.transactions.index') }}" class="hover:text-indigo-600 transition">Rating / Ulasan</a>
             @endauth
         </div>
             @auth
