@@ -4,18 +4,32 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Partner;
-use Faker\Factory as Faker;
 
 class PartnerSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
+        // Data partner statis yang aman tanpa fungsi fake()
+        $partners = [
+            [
+                'name' => 'Direktorat Kemahasiswaan Amikom',
+                'logo' => 'partners/amikom.png',
+            ],
+            [
+                'name' => 'Himpunan Mahasiswa Sistem Informasi',
+                'logo' => 'partners/himasi.png',
+            ],
+            [
+                'name' => 'Kadin Yogyakarta',
+                'logo' => 'partners/kadin.png',
+            ],
+        ];
 
-        // Contoh perbaikan isi seeder menggunakan $faker
-        Partner::create([
-            'name' => $faker->company,
-            'logo' => $faker->imageUrl(),
-        ]);
+        foreach ($partners as $partner) {
+            Partner::firstOrCreate(
+                ['name' => $partner['name']],
+                ['logo' => $partner['logo']]
+            );
+        }
     }
 }

@@ -48,9 +48,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'workshop-tech',
         ]);
 
-        // 4. Daftar Event (6 Data Asli + Penyesuaian Multi-Tenant & Free Event)
-        
-        // Event 1: Jazz Night (Entertainment)
+        // 4. Daftar Event
         Event::create([
             'user_id'     => $hima->id,
             'category_id' => $entertainment->id,
@@ -63,7 +61,6 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-1.png',
         ]);
 
-        // Event 2: AI Summit (Seminar)
         $eventPaid = Event::create([
             'user_id'     => $hima->id,
             'category_id' => $seminar->id,
@@ -76,7 +73,6 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-2.png',
         ]);
 
-        // Event 3: UI/UX Masterclass (Workshop)
         Event::create([
             'user_id'     => $hima->id,
             'category_id' => $workshop->id,
@@ -89,7 +85,6 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-3.png',
         ]);
 
-        // Event 4: Web Development Bootcamp (Workshop - Event Gratis Rp 0)
         Event::create([
             'user_id'     => $hima->id,
             'category_id' => $workshop->id,
@@ -97,12 +92,11 @@ class DatabaseSeeder extends Seeder
             'description' => 'Pelatihan gratis belajar Laravel dari dasar untuk mahasiswa.',
             'date'        => '2026-08-25 09:00:00',
             'location'    => 'Lab 2 Amikom',
-            'price'       => 0, // Event Gratis untuk Pengujian STEP 37
+            'price'       => 0,
             'stock'       => 80,
             'poster_path' => 'posters/event-4.png',
         ]);
 
-        // Event 5: E-Sport Tournament (Entertainment)
         Event::create([
             'user_id'     => $hima->id,
             'category_id' => $entertainment->id,
@@ -115,7 +109,6 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-5.png',
         ]);
 
-        // Event 6: Cyber Security Talk (Seminar)
         Event::create([
             'user_id'     => $hima->id,
             'category_id' => $seminar->id,
@@ -128,7 +121,7 @@ class DatabaseSeeder extends Seeder
             'poster_path' => 'posters/event-6.png',
         ]);
 
-        // 5. Sampel Transaksi Sukses (Untuk Pengujian Dashboard & Scanner)
+        // 5. Sampel Transaksi Sukses
         Transaction::create([
             'event_id'       => $eventPaid->id,
             'user_id'        => $admin->id,
@@ -142,10 +135,9 @@ class DatabaseSeeder extends Seeder
             'is_used'        => false,
         ]);
 
-        // 6. Pemanggilan Seeder Lainnya
+        // 6. Pemanggilan Seeder Pendukung yang Aman
         $this->call([
             PartnerSeeder::class,
-            OrganizerSeeder::class,
         ]);
     }
 }
