@@ -77,6 +77,9 @@ Route::get('/success/{order_id}', [CheckoutController::class, 'success'])
 */
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/transactions/{transaction}/review', [ReviewController::class, 'create'])
+        ->name('reviews.create');
+
     Route::post('/transactions/{transaction}/review', [ReviewController::class, 'store'])
         ->name('reviews.store');
 });
