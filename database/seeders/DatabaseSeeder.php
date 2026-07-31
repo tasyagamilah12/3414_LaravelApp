@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             'name'              => 'Superadmin Amikom',
             'email'             => 'admin@amikom.ac.id',
-            'password'          => Hash::make('password123'),
+            'password'          => Hash::make('p'),
             'role'              => 'admin',
             'organization_name' => 'Direktorat Kemahasiswaan',
         ]);
