@@ -4,18 +4,18 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Partner;
+use Faker\Factory as Faker;
 
 class PartnerSeeder extends Seeder
 {
     public function run(): void
     {
-        for ($i = 1; $i <= 5; $i++) {
+        $faker = Faker::create();
 
-            Partner::create([
-                'name' => fake()->company(),
-                'logo_url' => 'https://placehold.co/200x200'
-            ]);
-
-        }
+        // Contoh perbaikan isi seeder menggunakan $faker
+        Partner::create([
+            'name' => $faker->company,
+            'logo' => $faker->imageUrl(),
+        ]);
     }
 }
